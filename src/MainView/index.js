@@ -98,6 +98,11 @@ function MainView(props) {
                     isNewWord = true
                     item.syn_for.push(newSynonym)
                 }
+            }else if(item.word.toLowerCase() === newSynonym.toLowerCase()){
+                isNewWord=false;
+                if (!item.syn_for.includes(newSynonym.toLowerCase())) {
+                    item.syn_for.push(newSynonym)
+                }
             }
         })
         
