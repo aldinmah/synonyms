@@ -319,6 +319,9 @@ body{
 .content-view .result-wrapper .synonyms-items .word-item button:focus{
     text-decoration: none
 }
+.content-view .result-wrapper .second-level-results .card-header .result-title.no-results{
+    color: #ccc
+}
 .content-view .result-wrapper .second-level-results .synonyms-items .word-item button{
     background-color: #6c757d
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import API from '../API'
 import localDB from '../API/localDB'
-import { DATA_SOURCE, RESULTS_LAYOUT, LOADING_WITH_DOTS, SYNONYM_ADDED_MESSAGE, NO_SYNOYMS_FOUND_MESSAGE } from '../Constants'
+import { DATA_SOURCE, RESULTS_LAYOUT, LOADING_WITH_DOTS, SYNONYM_ADDED_MESSAGE, NO_SYNOYMS_FOUND_MESSAGE, SYNONYM_APPROVED_MESSAGE } from '../Constants'
 import CardList from '../WordsView/CardList'
 import TableList from '../WordsView/TableList'
 import AdminView from '../AdminView'
@@ -18,16 +18,26 @@ function MainView(props) {
     const [activeLayout, setActiveLayout] = useState(RESULTS_LAYOUT.CARDS)
     const [initLoad, setInitLoad] = useState(true)
     const [loading, setLoading] = useState(false)
-    const [synonymAdded, setSynonymAdded] = useState(false)
     const [localDBData, setLocalDBData] = useState(localDB.loadDataFromStorage())
     const [dataSource, setDataSource] = useState('LOCAL')
     const [showAddSynonymBox,setShowAddSynonymBox] = useState(false)
     const [adminViewActive, setAdminViewActive] = useState(0);
+    const [showMessage, setShowMessage] = useState(false);
+    const [messageText, setMessageText] = useState('');
+    const [msgTimeout, setMsgTimeout] = useState(0);
 
     useEffect(() => {    
        localDB.saveDataToStorage(localDBData)
     }, [localDBData]);
 
+    function showMessageBox(msg) {
+        clearTimeout(msgTimeout)
+        setMessageText(msg)
+        setShowMessage(true);
+        setMsgTimeout(setTimeout(() => {
+            setShowMessage(false)
+        }, 5000))
+    }
     function retriveSynonym() {
         setLoading(true)
         if (dataSource === DATA_SOURCE.LOCAL) {
@@ -39,9 +49,7 @@ function MainView(props) {
                
             approvedResults.map((item) => {
                 return numTransitiveSyn += item.wordRelatedSynonyms.length
-            });
-            console.log(approvedResults);
-            
+            });            
             setNumberOfTransitiveSynonyms(numTransitiveSyn)
             setSynonymsData(approvedResults)
             setLoading(false)
@@ -113,16 +121,18 @@ function MainView(props) {
             }
             dbData.push(wordData)
         }
-        setSynonymAdded(true)
+
+        showMessageBox(SYNONYM_ADDED_MESSAGE)
         setLocalDBData(dbData)
         setNewSynonym('')
-        setTimeout(() => {
-            setSynonymAdded(false)
-        }, 5000);
     }
     
     return (
         <div className="main-view-wrapper d-flex w-100 h-100 p-0 mx-auto flex-column">
+            {showMessage &&
+                <span onClick={()=>{setShowMessage(!showMessage);}}
+                    className="position-relative w-100 mb-0 float-left d-inline-block alert alert-success text-center syn-added-message">{messageText}</span>
+            }
             <div className="header-wrapper mb-4">
                 <div className="header-content col-12 col-md-6 offset-md-3 py-2 px-0 float-left">
                     <div className="logo-wrapper float-left">
@@ -145,10 +155,6 @@ function MainView(props) {
                 wrap={false}
             >
                 <Carousel.Item>
-                {synonymAdded &&
-                    <span onClick={()=>{setSynonymAdded(!synonymAdded)}}
-                        className="position-fixed float-left d-inline-block alert alert-success text-center syn-added-message">{SYNONYM_ADDED_MESSAGE}</span>
-                }
                 <div className="search-box m-y-1 p-3">
                     <div className="controls-wrapper col-12 row m-0 p-0 mb-2">
                         <div className="source-box col-12 float-left text-left p-0">
@@ -302,7 +308,7 @@ function MainView(props) {
                 </div>
                 </Carousel.Item>
                 <Carousel.Item>
-                    <AdminView localDBData={localDBData} approveWordInDB={approveWordInDB}/>
+                    <AdminView localDBData={localDBData} approveWordInDB={approveWordInDB} showMessageBox={showMessageBox}/>
                 </Carousel.Item>
             </Carousel>
                 

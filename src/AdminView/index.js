@@ -3,7 +3,6 @@ import { SYNONYM_APPROVED_MESSAGE } from '../Constants'
 
 function AdminView(props) {
     const [notApprovedSynonyms, setNotApprovedSynonyms] = useState(filterNotApprovedSynonyms(props.localDBData));
-    const [showMessage, setShowMessage] = useState(false);
 
     useEffect(() => {
         setNotApprovedSynonyms(filterNotApprovedSynonyms(props.localDBData))
@@ -12,7 +11,7 @@ function AdminView(props) {
     function filterNotApprovedSynonyms(collection) {
         let notApproved = []
         if (collection.length) {
-            collection.map(function (word) {
+            collection.forEach(function (word) {
                 if (!word.approved) notApproved.push(word)
             })
         }
@@ -26,18 +25,11 @@ function AdminView(props) {
             setNotApprovedSynonyms(notApprovedNew)
         }
         props.approveWordInDB(word.guid)
-        setShowMessage(true)
-        setTimeout(() => {
-            setShowMessage(false)
-        }, 5000);
+        props.showMessageBox(SYNONYM_APPROVED_MESSAGE)
     }
 
     return (
         <div className="admin-view-wrapper col-12 text-left p-0 m-0">
-            {showMessage &&
-                <span onClick={() => { setShowMessage(!showMessage) }}
-                    className="position-fixed float-left d-inline-block alert alert-success text-center syn-approved-message">{SYNONYM_APPROVED_MESSAGE}</span>
-            }
             <h4 className="col-12 py-3 m-0 admin-heading">Admin panel - synonyms approval <span className="num-of-approval float-right">{notApprovedSynonyms.length} items</span></h4>
             {notApprovedSynonyms.length>0 &&
                 <table className="table table-striped">

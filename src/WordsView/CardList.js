@@ -33,7 +33,7 @@ function CardList(props) {
             <Accordion className="col-12 text-left p-0">
                 <Card className="result-box second-level-results">
                     <Accordion.Toggle as={Card.Header} eventKey="1">
-                        <span className="result-title">
+                        <span className={`result-title ${!props.numberOfTransitiveSynonyms?"no-results":""}`}>
                             Transitive synonyms
                                     <span className="results-number float-right">
                                 {!props.numberOfTransitiveSynonyms ? "No results found" : (props.numberOfTransitiveSynonyms + " results found")}
