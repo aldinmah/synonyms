@@ -381,6 +381,14 @@ body{
     position: relative;
     top: 5px
 }
+.admin-view-wrapper .controls-column label{
+    margin-bottom: 0
+}
+.admin-view-wrapper .controls-column label input{
+    margin-right: 5px;
+    position: relative;
+    top: 1px
+}
 /* Spinner */
 @keyframes spinner-border {
     to {

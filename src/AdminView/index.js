@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { SYNONYM_APPROVED_MESSAGE } from '../Constants'
 
 function AdminView(props) {
-    const [notApprovedSynonyms, setNotApprovedSynonyms] = useState(filterNotApprovedSynonyms(props.localDBData));
-
-    useEffect(() => {
+    const [onlyPending, setOnlyPending] = useState(false)
+    const [notApprovedSynonyms, setNotApprovedSynonyms] = useState(props.localDBData);
+    useEffect(() => {        
         setNotApprovedSynonyms(filterNotApprovedSynonyms(props.localDBData))
-    }, [props.localDBData])
+    }, [props.localDBData,onlyPending])
 
     function filterNotApprovedSynonyms(collection) {
+        if(onlyPending)
+            return props.localDBData;
         let notApproved = []
         if (collection.length) {
             collection.forEach(function (word) {
@@ -17,13 +19,7 @@ function AdminView(props) {
         }
         return notApproved
     }
-    function approveWord(word) {
-        var notApprovedNew = [...notApprovedSynonyms];
-        var index = notApprovedNew.indexOf(word)
-        if (index !== -1) {
-            notApprovedNew.splice(index, 1)
-            setNotApprovedSynonyms(notApprovedNew)
-        }
+    function changeApproval(word) {
         props.approveWordInDB(word.guid)
         props.showMessageBox(SYNONYM_APPROVED_MESSAGE)
     }
@@ -31,7 +27,7 @@ function AdminView(props) {
     return (
         <div className="admin-view-wrapper col-12 text-left p-0 m-0">
             <h4 className="col-12 py-3 m-0 admin-heading">Admin panel - synonyms approval <span className="num-of-approval float-right">{notApprovedSynonyms.length} items</span></h4>
-            {notApprovedSynonyms.length>0 &&
+            {props.localDBData.length>0 &&
                 <table className="table table-striped">
                     <thead>
                         <tr>
@@ -39,7 +35,7 @@ function AdminView(props) {
                             <th scope="col">Word</th>
                             <th scope="col">Description/Score</th>
                             <th scope="col">Synonym for word</th>
-                            <th scope="col"></th>
+                            <th scope="col" className="controls-column"><label><input type="checkbox" onChange={(e)=>{setOnlyPending(!onlyPending)}}/>Show all?</label></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,7 +47,9 @@ function AdminView(props) {
                                 <td>{item.syn_for.map(function (syn, syInd) {
                                     return <span key={"tsyn_" + syn + syInd}>{syn}{(syInd === item.syn_for.length || item.syn_for.length === 1) ? "" : ", "}</span>
                                 })}</td>
-                                <td><button type="button" className="btn btn-success approve-button" onClick={() => { approveWord(item) }}>Approve</button></td>
+                                <td>
+                                    <button type="button" className={`btn approve-button ${item.approved?"btn-danger":"btn-success"}`} onClick={() => { changeApproval(item) }}>{item.approved?"Reject":"Approve"}</button>
+                                </td>
                             </tr>
                         })}
                     </tbody>

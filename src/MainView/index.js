@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import API from '../API'
 import localDB from '../API/localDB'
-import { DATA_SOURCE, RESULTS_LAYOUT, LOADING_WITH_DOTS, SYNONYM_ADDED_MESSAGE, NO_SYNOYMS_FOUND_MESSAGE, SYNONYM_APPROVED_MESSAGE } from '../Constants'
+import { DATA_SOURCE, RESULTS_LAYOUT, LOADING_WITH_DOTS, SYNONYM_ADDED_MESSAGE, NO_SYNOYMS_FOUND_MESSAGE } from '../Constants'
 import CardList from '../WordsView/CardList'
 import TableList from '../WordsView/TableList'
 import AdminView from '../AdminView'
@@ -80,7 +80,10 @@ function MainView(props) {
         let dbData = [...localDBData]
         dbData.forEach(function (item) {
             if(item.guid==wordGuid){
-                item.approved = true;
+                if(item.approved)
+                    item.approved = false
+                else
+                    item.approved = true;
             }
         })
         localDB.saveDataToStorage(dbData)
