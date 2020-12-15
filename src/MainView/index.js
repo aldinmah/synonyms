@@ -49,7 +49,7 @@ function MainView(props) {
                
             approvedResults.map((item) => {
                 return numTransitiveSyn += item.wordRelatedSynonyms.length
-            });            
+            });                     
             setNumberOfTransitiveSynonyms(numTransitiveSyn)
             setSynonymsData(approvedResults)
             setLoading(false)
@@ -88,25 +88,22 @@ function MainView(props) {
     }
     function addNewSynonym() {
         let dbData = [...localDBData]
-        let itemExist = false
-        let isNewWord = true
+        let addMainWord = true
+        let addSynAsNewWord = true
         dbData.forEach(function (item) {
            if (item.word.toLowerCase() === selectedWord.toLowerCase()) {
-                itemExist = true
-                isNewWord = false
-                if (!item.syn_for.includes(newSynonym.toLowerCase())) {
-                    isNewWord = true
-                    item.syn_for.push(newSynonym)
-                }
-            }else if(item.word.toLowerCase() === newSynonym.toLowerCase()){
-                isNewWord=false;
+                addMainWord = false
                 if (!item.syn_for.includes(newSynonym.toLowerCase())) {
                     item.syn_for.push(newSynonym)
                 }
             }
+            if(item.word.toLowerCase() === newSynonym.toLowerCase()){
+                item.syn_for.push(selectedWord)
+                addSynAsNewWord = false;
+            }
         })
         
-        if(!itemExist){
+        if(addMainWord){
             let wordData = {
                 guid: guid(),
                 word: selectedWord,
@@ -116,7 +113,7 @@ function MainView(props) {
             }
             dbData.push(wordData)
         }
-        if(isNewWord){
+        if(addSynAsNewWord){
             let wordData = {
                 guid: guid(),
                 word: newSynonym,

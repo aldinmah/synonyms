@@ -57,9 +57,6 @@ function getBaseSynonyms(word, collection) {
                     baseSynonym.baseWord.syn_for.forEach((transitiveSyn) => {
                         if (transitiveSyn.toLowerCase() !== baseWord.word.toLowerCase()){
                             let transitiveWord = getTransitiveWordByText(transitiveSyn, collection)
-                            console.log('my transitive word');
-                            console.log(transitiveWord);
-                            
                             if(transitiveWord.approved)
                                 baseSynonym.wordRelatedSynonyms.push(transitiveWord)
                         }
