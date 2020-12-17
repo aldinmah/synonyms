@@ -178,16 +178,17 @@ body{
 .content-view .search-box .add-synonym-field-box .link-button{
     float: left;
     background: none;
-    border: 0;
+    border: 1px solid #fff;
+    padding: 4px 10px;
     color: #fff;
-    font-size: .75rem;
+    font-size: .95rem;
     width: auto;
     text-align: left;
     clear: both;
-    outline: none
+    outline: none;
 }
 .content-view .search-box .add-synonym-field-box .link-button:hover{
-    text-decoration: underline
+    background: #00828a
 }
 .content-view .search-box .add-synonym-wrapper{
     height: 28px;

@@ -225,7 +225,7 @@ function MainView(props) {
                             {selectedWord && dataSource===DATA_SOURCE.LOCAL &&
                                 <div className="add-synonym-field-box">
                                     <button 
-                                        className="font-italic link-button my-1 p-0" 
+                                        className="font-italic link-button my-1" 
                                         type="button"
                                         onClick={()=>{setShowAddSynonymBox(!showAddSynonymBox)}}
                                         >
